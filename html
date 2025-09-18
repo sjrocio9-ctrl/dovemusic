@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DoveMusic - Streaming de Música Urbana</title>
+    
+    <!-- Bootstrap 5.3 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" rel="stylesheet">
+    <!-- Custom CSS -->
+    <link href="styles.css" rel="stylesheet">
+</head>
+<body>
+    <!-- Navigation Bar -->
+    <nav class="navbar navbar-expand-lg navbar-light bg-dove-light fixed-top">
+        <div class="container">
+            <a class="navbar-brand fw-bold text-dove-primary" href="#" onclick="navigateToPage('home')">
+                <i class="bi bi-music-note-beamed me-2"></i>DoveMusic
+            </a>
+            
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="#" onclick="navigateToPage('home')" id="nav-home">
+                            <i class="bi bi-house-door me-1"></i>Inicio
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#" onclick="navigateToPage('search')" id="nav-search">
+                            <i class="bi bi-search me-1"></i>Buscar
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#" onclick="navigateToPage('artists')" id="nav-artists">
+                            <i class="bi bi-person me-1"></i>Artistas
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#" onclick="navigateToPage('playlists')" id="nav-playlists">
+                            <i class="bi bi-music-note-list me-1"></i>Playlists
+                        </a>
+                    </li>
+                </ul>
+                
+                <div class="d-flex align-items-center">
+                    <div class="input-group search-container">
+                        <input type="text" class="form-control search-input" placeholder="Buscar música..." 
+                               id="searchInput" onkeypress="handleSearchKeyPress(event)">
+                        <button class="btn btn-dove-primary" type="button" onclick="handleSearch()">
+                            <i class="bi bi-search"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <!-- Home Page -->
+        <div id="homePage" class="page-content">
+            <!-- Hero Section -->
+            <div class="hero-section bg-gradient-dove text-white py-5">
+                <div class="container">
+                    <div class="row align-items-center">
+                        <div class="col-lg-6">
+                            <h1 class="display-4 fw-bold mb-4">Descubre Música Urbana</h1>
+                            <p class="lead mb-4">Los mejores hits de reggaeton, trap y música urbana en un solo lugar</p>
+                            <button class="btn btn-light btn-lg" onclick="navigateToPage('search')">
+                                <i class="bi bi-play-circle me-2"></i>Explorar Música
+                            </button>
+                        </div>
+                        <div class="col-lg-6">
+                            <img src="https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=500&h=300&fit=crop" 
+                                 alt="Música" class="img-fluid rounded shadow">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Popular Tracks -->
+            <div class="container py-5">
+                <h2 class="mb-4">Canciones Populares</h2>
+                <div class="row" id="popularTracks">
+                    <!-- Popular tracks will be loaded here -->
+                </div>
+            </div>
+
+            <!-- Genres -->
+            <div class="container py-5">
+                <h2 class="mb-4">Explora por Género</h2>
+                <div class="row">
+                    <div class="col-md-4 mb-3">
+                        <div class="card genre-card" onclick="handleGenreSearch('reggaeton')">
+                            <div class="card-body text-center">
+                                <i class="bi bi-music-note-beamed display-4 text-dove-primary mb-3"></i>
+                                <h5>Reggaeton</h5>
+                                <p class="text-muted">Los mejores hits del reggaeton</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <div class="card genre-card" onclick="handleGenreSearch('trap')">
+                            <div class="card-body text-center">
+                                <i class="bi bi-lightning display-4 text-dove-primary mb-3"></i>
+                                <h5>Trap</h5>
+                                <p class="text-muted">Trap urbano y hip-hop</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <div class="card genre-card" onclick="handleGenreSearch('pop latino')">
+                            <div class="card-body text-center">
+                                <i class="bi bi-heart display-4 text-dove-primary mb-3"></i>
+                                <h5>Pop Latino</h5>
+                                <p class="text-muted">Pop urbano latinoamericano</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Search Page -->
+        <div id="searchPage" class="page-content d-none">
+            <div class="container py-5">
+                <h2 class="mb-4">Resultados de Búsqueda</h2>
+                
+                <!-- Loading -->
+                <div id="searchLoading" class="text-center d-none">
+                    <div class="spinner-border text-dove-primary" role="status">
+                        <span class="visually-hidden">Cargando...</span>
+                    </div>
+                    <p class="mt-3">Buscando música...</p>
+                </div>
+
+                <!-- Error -->
+                <div id="searchError" class="alert alert-danger d-none">
+                    <i class="bi bi-exclamation-circle me-2"></i>
+                    <span id="errorMessage"></span>
+                    <button class="btn btn-sm btn-outline-danger ms-3" onclick="handleRetry()">
+                        <i class="bi bi-arrow-clockwise me-1"></i>Reintentar
+                    </button>
+                </div>
+
+                <!-- No Results -->
+                <div id="noResults" class="text-center d-none">
+                    <i class="bi bi-search display-1 text-muted mb-3"></i>
+                    <h4>No se encontraron resultados</h4>
+                    <p class="text-muted">Intenta con otros términos de búsqueda</p>
+                </div>
+
+                <!-- Search Results -->
+                <div class="row" id="searchResults">
+                    <!-- Search results will be loaded here -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Artists Page -->
+        <div id="artistsPage" class="page-content d-none">
+            <div class="container py-5">
+                <h2 class="mb-4">Artistas Destacados</h2>
+                <div class="row" id="artistsList">
+                    <!-- Artists will be loaded here -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Playlists Page -->
+        <div id="playlistsPage" class="page-content d-none">
+            <div class="container py-5">
+                <h2 class="mb-4">Playlists Curadas</h2>
+                <div class="row" id="playlistsList">
+                    <!-- Playlists will be loaded here -->
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Audio Player -->
+    <div class="audio-player fixed-bottom bg-dove-light border-top" id="audioPlayer" style="display: none;">
+        <div class="container">
+            <div class="row align-items-center py-3">
+                <div class="col-md-4">
+                    <div class="d-flex align-items-center">
+                        <img id="playerAlbumCover" src="" alt="Album Cover" class="player-album-cover me-3">
+                        <div>
+                            <h6 class="mb-0" id="playerTrackTitle">Título</h6>
+                            <small class="text-muted" id="playerArtistName">Artista</small>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-md-4 text-center">
+                    <div class="player-controls">
+                        <button class="btn btn-dove-primary btn-sm me-2" onclick="previousTrack()">
+                            <i class="bi bi-skip-backward"></i>
+                        </button>
+                        <button class="btn btn-dove-primary" onclick="togglePlayPause()" id="playPauseBtn">
+                            <i class="bi bi-play-fill" id="playPauseIcon"></i>
+                        </button>
+                        <button class="btn btn-dove-primary btn-sm ms-2" onclick="nextTrack()">
+                            <i class="bi bi-skip-forward"></i>
+                        </button>
+                        <button class="btn btn-outline-secondary btn-sm ms-3" onclick="stopTrack()">
+                            <i class="bi bi-stop"></i>
+                        </button>
+                    </div>
+                    
+                    <div class="progress mt-2" style="height: 4px;">
+                        <div class="progress-bar bg-dove-primary" id="progressBar" style="width: 0%"></div>
+                    </div>
+                    
+                    <div class="d-flex justify-content-between mt-1">
+                        <small id="currentTime">0:00</small>
+                        <small id="totalTime">0:00</small>
+                    </div>
+                </div>
+                
+                <div class="col-md-4">
+                    <div class="d-flex align-items-center justify-content-end">
+                        <i class="bi bi-volume-up text-muted me-2"></i>
+                        <input type="range" class="form-range volume-slider" min="0" max="100" value="50" 
+                               id="volumeSlider" onchange="setVolume(this.value)">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Hidden Audio Element -->
+    <audio id="audioElement" preload="none"></audio>
+
+    <!-- Bootstrap 5.3 JS Bundle -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Custom JavaScript -->
+    <script src="script.js"></script>
+</body>
+</html>
